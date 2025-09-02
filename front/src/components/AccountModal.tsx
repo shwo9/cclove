@@ -113,7 +113,7 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
 
         try {
             if (account) {
-                // 更新账户
+                // 계정 업데이트
                 const updateData: AccountUpdate = {}
 
                 if (formData.cookie_value && formData.cookie_value !== account.cookie_value) {
@@ -126,7 +126,7 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
 
                 await accountsApi.update(account.organization_uuid, updateData)
             } else {
-                // 创建新账户
+                // 새 계정 만들기
                 const createData: AccountCreate = {}
 
                 if (formData.cookie_value) {
@@ -159,17 +159,17 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
         <AlertDialog open={showCookieAlert} onOpenChange={setShowCookieAlert}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Cookie 格式警告</AlertDialogTitle>
+                    <AlertDialogTitle>쿠키 형식 경고</AlertDialogTitle>
                     <AlertDialogDescription>
-                        检测到您输入的 Cookie 格式可能不正确。标准格式应包含 "sessionKey=sk-ant-sid01-" 开头。
+                        입력한 쿠키 형식이 올바르지 않을 수 있습니다. 표준 형식은 "sessionKey=sk-ant-sid01-"로 시작해야 합니다.
                         <br />
                         <br />
-                        如果您使用的是反向代理或自定义配置，可以忽略此警告继续提交。
+                        리버스 프록시 또는 사용자 지정 구성을 사용하는 경우 이 경고를 무시하고 계속 제출할 수 있습니다.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>取消</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleCookieAlertConfirm}>仍然提交</AlertDialogAction>
+                    <AlertDialogCancel>취소</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleCookieAlertConfirm}>계속 제출</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
@@ -184,7 +184,7 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
                     </Label>
                     <Textarea
                         id='cookie_value'
-                        placeholder='粘贴您的 Claude Cookie...'
+                        placeholder='Claude 쿠키를 붙여넣으세요...'
                         value={formData.cookie_value}
                         onChange={e => setFormData({ ...formData, cookie_value: e.target.value })}
                         className='min-h-[100px] font-mono text-sm break-all'
@@ -195,7 +195,7 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
                 <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
                     <CollapsibleTrigger asChild>
                         <Button variant='outline' type='button' className='w-full justify-between'>
-                            <span>高级选项</span>
+                            <span>고급 옵션</span>
                             {showAdvanced ? <ChevronUp className='h-4 w-4' /> : <ChevronDown className='h-4 w-4' />}
                         </Button>
                     </CollapsibleTrigger>
@@ -205,14 +205,14 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
                                 <Label htmlFor='organization_uuid'>Organization UUID</Label>
                                 <Input
                                     id='organization_uuid'
-                                    placeholder='留空自动获取'
+                                    placeholder='자동으로 가져오려면 비워두세요'
                                     value={formData.organization_uuid}
                                     onChange={e => {
                                         const value = e.target.value
                                         setFormData({ ...formData, organization_uuid: value })
                                         const formatted = formatUUID(value)
                                         if (formatted && !isValidUUID(formatted)) {
-                                            setUuidError('请输入有效的 UUID 格式')
+                                            setUuidError('유효한 UUID 형식을 입력하세요')
                                         } else {
                                             setUuidError('')
                                         }
@@ -229,13 +229,13 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
                         )}
 
                         <div className='space-y-2'>
-                            <Label htmlFor='accountType'>账户类型</Label>
+                            <Label htmlFor='accountType'>계정 유형</Label>
                             <Select value={accountType} onValueChange={value => setAccountType(value as any)}>
                                 <SelectTrigger className='w-full' id='accountType'>
-                                    <SelectValue placeholder='选择账户类型' />
+                                    <SelectValue placeholder='계정 유형 선택' />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value='none'>未选择</SelectItem>
+                                    <SelectItem value='none'>선택 안 함</SelectItem>
                                     <SelectItem value='Free'>Free</SelectItem>
                                     <SelectItem value='Pro'>Pro</SelectItem>
                                     <SelectItem value='Max'>Max</SelectItem>
@@ -251,7 +251,7 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
     const footerContent = (
         <>
             <Button type='button' variant='outline' onClick={onClose}>
-                取消
+                취소
             </Button>
             <Button
                 type='submit'
@@ -262,7 +262,7 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
                 }
             >
                 {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-                {loading ? '保存中...' : '保存'}
+                {loading ? '저장 중...' : '저장'}
             </Button>
         </>
     )
@@ -278,9 +278,9 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
                     <DialogContent className='sm:max-w-[600px]'>
                         <form onSubmit={handleSubmitForm}>
                             <DialogHeader>
-                                <DialogTitle>{account ? '编辑账户' : '添加 Cookie'}</DialogTitle>
+                                <DialogTitle>{account ? '계정 편집' : '쿠키 추가'}</DialogTitle>
                                 <DialogDescription>
-                                    {account ? '更新账户的认证信息' : '添加新的 Claude 账户 Cookie'}
+                                    {account ? '계정 인증 정보 업데이트' : '새 Claude 계정 쿠키 추가'}
                                 </DialogDescription>
                             </DialogHeader>
                             {formContent}
@@ -299,9 +299,9 @@ export function AccountModal({ account, onClose }: AccountModalProps) {
                 <DrawerContent>
                     <form onSubmit={handleSubmitForm} className='max-h-[90vh] overflow-auto'>
                         <DrawerHeader>
-                            <DrawerTitle>{account ? '编辑账户' : '添加 Cookie'}</DrawerTitle>
+                            <DrawerTitle>{account ? '계정 편집' : '쿠키 추가'}</DrawerTitle>
                             <DrawerDescription>
-                                {account ? '更新账户的认证信息' : '添加新的 Claude 账户 Cookie'}
+                                {account ? '계정 인증 정보 업데이트' : '새 Claude 계정 쿠키 추가'}
                             </DrawerDescription>
                         </DrawerHeader>
                         <div className='px-4'>{formContent}</div>

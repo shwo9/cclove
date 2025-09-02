@@ -20,16 +20,16 @@ export function Login() {
         setLoading(true)
 
         try {
-            // 保存 admin key
+            // admin key 저장
             localStorage.setItem('adminKey', adminKey)
 
-            // 使用 statistics API 验证 Admin Key
+            // statistics API를 사용하여 Admin Key 확인
             await statisticsApi.get()
 
-            // 成功则跳转
+            // 성공 시 리디렉션
             navigate('/')
         } catch (err) {
-            setError('Admin Key 无效或服务器连接失败')
+            setError('Admin Key가 유효하지 않거나 서버 연결에 실패했습니다')
             localStorage.removeItem('adminKey')
         } finally {
             setLoading(false)
@@ -38,7 +38,7 @@ export function Login() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-white to-purple-50 relative overflow-hidden">
-            {/* 装饰性背景元素 */}
+            {/* 장식용 배경 요소 */}
             <div className="absolute inset-0 opacity-30">
                 <div className="absolute top-10 left-10 w-72 h-72 bg-pink-200 rounded-full filter blur-3xl animate-pulse"></div>
                 <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-200 rounded-full filter blur-3xl animate-pulse animation-delay-2000"></div>
@@ -52,9 +52,9 @@ export function Login() {
                             <span className="text-3xl font-bold text-white">C</span>
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-bold">欢迎回来</CardTitle>
+                    <CardTitle className="text-2xl font-bold">돌아오신 것을 환영합니다</CardTitle>
                     <CardDescription>
-                        输入您的 Admin Key 以访问管理面板
+                        관리자 패널에 액세스하려면 Admin Key를 입력하세요
                     </CardDescription>
                 </CardHeader>
                 
@@ -67,7 +67,7 @@ export function Login() {
                                 <Input
                                     id="admin-key"
                                     type="password"
-                                    placeholder="输入您的管理密钥"
+                                    placeholder="관리자 키를 입력하세요"
                                     value={adminKey}
                                     onChange={(e) => setAdminKey(e.target.value)}
                                     className="pl-10"
@@ -90,14 +90,14 @@ export function Login() {
                             disabled={loading || !adminKey.trim()}
                         >
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            {loading ? '验证中...' : '登录'}
+                            {loading ? '확인 중...' : '로그인'}
                         </Button>
                     </CardFooter>
                 </form>
             </Card>
             
             <div className="absolute bottom-4 left-0 right-0 text-center text-sm text-muted-foreground">
-                <p>Clove - 全力以赴的 Claude 反向代理！</p>
+                <p>Clove - 최선을 다하는 Claude 리버스 프록시!</p>
             </div>
         </div>
     )

@@ -81,7 +81,7 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
                         updated[i] = {
                             ...updated[i],
                             status: 'error',
-                            error: 'Cookie 格式无效',
+                            error: '쿠키 형식이 잘못되었습니다',
                         }
                         return updated
                     })
@@ -104,7 +104,7 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
                     return updated
                 })
             } catch (error: any) {
-                const errorMessage = error.response?.data?.detail?.message || '添加失败'
+                const errorMessage = error.response?.data?.detail?.message || '추가 실패'
 
                 setResults(prev => {
                     const updated = [...prev]
@@ -117,7 +117,7 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
                 })
             }
 
-            // 小延迟，避免请求过快
+            // 요청이 너무 빠르지 않도록 약간의 지연
             await new Promise(resolve => setTimeout(resolve, 300))
         }
 
@@ -141,12 +141,12 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
 
         try {
             await navigator.clipboard.writeText(failedCookies)
-            toast.success('已复制失败的 Cookie', {
+            toast.success('실패한 쿠키를 복사했습니다', {
                 icon: <Check className='h-4 w-4' />,
             })
         } catch (error) {
             console.error('Failed to copy:', error)
-            toast.error('复制失败')
+            toast.error('복사 실패')
         }
     }
 
@@ -181,28 +181,28 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
                 <>
                     <div className='space-y-2'>
                         <Label htmlFor='cookies'>
-                            Cookie 列表 <span className='text-destructive'>*</span>
+                            쿠키 목록 <span className='text-destructive'>*</span>
                         </Label>
                         <Textarea
                             id='cookies'
                             placeholder={
-                                '粘贴您的 Cookie，每行一个...\n\n例如：\nsk-ant-sid01-xxxxx\nsk-ant-sid01-yyyyy\nsessionKey=sk-ant-sid01-zzzzz'
+                                '쿠키를 한 줄에 하나씩 붙여넣으세요...\n\n예시：\nsk-ant-sid01-xxxxx\nsk-ant-sid01-yyyyy\nsessionKey=sk-ant-sid01-zzzzz'
                             }
                             value={cookies}
                             onChange={e => setCookies(e.target.value)}
                             className='min-h-[200px] font-mono text-sm break-all'
                             required
                         />
-                        <p className='text-sm text-muted-foreground'>支持直接粘贴 sessionKey 或完整的 Cookie 格式</p>
+                        <p className='text-sm text-muted-foreground'>sessionKey 또는 전체 쿠키 형식을 직접 붙여넣기 지원</p>
                     </div>
                 </>
             ) : (
                 <div className='space-y-4'>
                     <div className='space-y-2'>
                         <div className='flex items-center justify-between'>
-                            <Label>处理进度</Label>
+                            <Label>처리 진행률</Label>
                             <span className='text-sm text-muted-foreground'>
-                                {getSuccessCount()} 成功 / {getErrorCount()} 失败 / {results.length} 总计
+                                {getSuccessCount()} 성공 / {getErrorCount()} 실패 / {results.length} 합계
                             </span>
                         </div>
                         <Progress value={getProgress()} className='h-2' />
@@ -236,8 +236,8 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
                             <Alert>
                                 <FileText className='h-4 w-4' />
                                 <AlertDescription>
-                                    处理完成！成功添加 {getSuccessCount()} 个账户
-                                    {getErrorCount() > 0 && `，${getErrorCount()} 个失败`}。
+                                    처리 완료! {getSuccessCount()}개 계정 추가 성공
+                                    {getErrorCount() > 0 && `, ${getErrorCount()}개 실패`}。
                                 </AlertDescription>
                             </Alert>
                             {getErrorCount() > 0 && (
@@ -249,7 +249,7 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
                                     onClick={copyFailedCookies}
                                 >
                                     <Copy className='mr-2 h-4 w-4' />
-                                    复制失败的 Cookie
+                                    실패한 쿠키 복사
                                 </Button>
                             )}
                         </>
@@ -264,16 +264,16 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
             {!showResults ? (
                 <>
                     <Button type='button' variant='outline' onClick={handleClose}>
-                        取消
+                        취소
                     </Button>
                     <Button type='submit' disabled={isProcessing || !cookies.trim()}>
                         {isProcessing && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-                        开始添加
+                        추가 시작
                     </Button>
                 </>
             ) : (
                 <Button onClick={handleClose} disabled={isProcessing}>
-                    {isProcessing ? '处理中...' : '完成'}
+                    {isProcessing ? '처리 중...' : '완료'}
                 </Button>
             )}
         </>
@@ -289,8 +289,8 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
                 <DialogContent className='sm:max-w-[600px]'>
                     <form onSubmit={handleSubmit}>
                         <DialogHeader>
-                            <DialogTitle>批量添加 Cookie</DialogTitle>
-                            <DialogDescription>一次性添加多个 Claude 账户 Cookie</DialogDescription>
+                            <DialogTitle>쿠키 일괄 추가</DialogTitle>
+                            <DialogDescription>여러 Claude 계정 쿠키를 한 번에 추가</DialogDescription>
                         </DialogHeader>
                         <div className='py-4'>{formContent}</div>
                         <DialogFooter>{footerContent}</DialogFooter>
@@ -305,8 +305,8 @@ export function BatchCookieModal({ onClose }: BatchCookieModalProps) {
             <DrawerContent>
                 <form onSubmit={handleSubmit} className='max-h-[90vh] overflow-auto'>
                     <DrawerHeader>
-                        <DrawerTitle>批量添加 Cookie</DrawerTitle>
-                        <DrawerDescription>一次性添加多个 Claude 账户 Cookie</DrawerDescription>
+                        <DrawerTitle>쿠키 일괄 추가</DrawerTitle>
+                        <DrawerDescription>여러 Claude 계정 쿠키를 한 번에 추가</DrawerDescription>
                     </DrawerHeader>
                     <div className='px-4 pb-4'>{formContent}</div>
                     <DrawerFooter className='flex-row justify-end space-x-2'>{footerContent}</DrawerFooter>

@@ -53,7 +53,7 @@ export function Settings() {
         loadSettings()
     }, [])
 
-    // 立即保存函数
+    // 즉시 저장 함수
     const saveChanges = useCallback(
         async (changes: SettingsUpdate) => {
             if (Object.keys(changes).length === 0) return
@@ -63,12 +63,12 @@ export function Settings() {
                 await settingsApi.update(changes)
                 setSaveStatus('saved')
 
-                // 更新原始设置以反映已保存的更改
+                // 저장된 변경 사항을 반영하기 위해 원본 설정 업데이트
                 if (originalSettings && settings) {
                     setOriginalSettings({ ...originalSettings, ...changes })
                 }
 
-                // 3秒后重置状态
+                // 3초 후 상태 재설정
                 setTimeout(() => setSaveStatus('idle'), 3000)
             } catch (error) {
                 console.error('Failed to save settings:', error)
@@ -79,22 +79,22 @@ export function Settings() {
         [originalSettings],
     )
 
-    // 更新设置但不保存
+    // 저장하지 않고 설정 업데이트
     const updateSettings = useCallback((newSettings: SettingsRead) => {
         setSettings(newSettings)
     }, [])
 
-    // 处理字段变化并立即保存
+    // 필드 변경 처리 및 즉시 저장
     const handleFieldChange = useCallback(
         async (newSettings: SettingsRead) => {
             setSettings(newSettings)
 
             if (!originalSettings) return
 
-            // 比较并获取变化的字段
+            // 변경된 필드 비교 및 가져오기
             const changes: SettingsUpdate = {}
 
-            // 检查每个字段的变化
+            // 각 필드의 변경 사항 확인
             Object.keys(newSettings).forEach(key => {
                 const typedKey = key as keyof SettingsRead
                 if (JSON.stringify(newSettings[typedKey]) !== JSON.stringify(originalSettings[typedKey])) {
@@ -102,7 +102,7 @@ export function Settings() {
                 }
             })
 
-            // 如果有变化，立即保存
+            // 변경 사항이 있으면 즉시 저장
             if (Object.keys(changes).length > 0) {
                 await saveChanges(changes)
             }
@@ -177,7 +177,7 @@ export function Settings() {
     const copyKey = async (key: string) => {
         try {
             await navigator.clipboard.writeText(key)
-            toast.success('密钥已复制到剪贴板')
+            toast.success('키가 클립보드에 복사되었습니다')
 
             setCopiedKeys(prev => new Set(prev).add(key))
             setTimeout(() => {
@@ -188,7 +188,7 @@ export function Settings() {
                 })
             }, 2000)
         } catch (error) {
-            toast.error('复制失败，请手动复制')
+            toast.error('복사에 실패했습니다. 수동으로 복사해주세요')
         }
     }
 
@@ -219,26 +219,26 @@ export function Settings() {
         <div className='space-y-6'>
             <div className='flex items-center justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold tracking-tight pb-1'>应用设置</h1>
-                    <p className='text-muted-foreground'>管理您的应用程序配置和密钥</p>
+                    <h1 className='text-3xl font-bold tracking-tight pb-1'>애플리케이션 설정</h1>
+                    <p className='text-muted-foreground'>애플리케이션 구성 및 키를 관리합니다</p>
                 </div>
                 <div className='flex items-center gap-2'>
                     {saveStatus === 'saving' && (
                         <Badge variant='secondary' className='gap-1'>
                             <Loader2 className='h-3 w-3 animate-spin' />
-                            保存中...
+                            저장 중...
                         </Badge>
                     )}
                     {saveStatus === 'saved' && (
                         <Badge variant='default' className='gap-1 bg-green-500'>
                             <Check className='h-3 w-3' />
-                            已保存
+                            저장됨
                         </Badge>
                     )}
                     {saveStatus === 'error' && (
                         <Badge variant='destructive' className='gap-1'>
                             <AlertCircle className='h-3 w-3' />
-                            保存失败
+                            저장 실패
                         </Badge>
                     )}
                 </div>
@@ -249,14 +249,14 @@ export function Settings() {
                 <CardHeader>
                     <CardTitle className='flex items-center gap-2'>
                         <Key className='h-5 w-5' />
-                        API 密钥
+                        API 키
                     </CardTitle>
-                    <CardDescription>管理您的 API 访问密钥</CardDescription>
+                    <CardDescription>API 액세스 키를 관리합니다</CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                     {settings.api_keys.length === 0 ? (
                         <Alert>
-                            <AlertDescription>暂无 API 密钥，请添加第一个密钥。</AlertDescription>
+                            <AlertDescription>API 키가 없습니다. 첫 번째 키를 추가해주세요.</AlertDescription>
                         </Alert>
                     ) : (
                         <div className='space-y-2'>
@@ -274,7 +274,7 @@ export function Settings() {
                                             size='sm'
                                             onClick={() => toggleKeyVisibility(key)}
                                             className='h-8 w-8 p-0'
-                                            title={visibleKeys.has(key) ? '隐藏密钥' : '显示密钥'}
+                                            title={visibleKeys.has(key) ? '키 숨기기' : '키 표시'}
                                         >
                                             {visibleKeys.has(key) ? (
                                                 <EyeOff className='h-4 w-4' />
@@ -287,7 +287,7 @@ export function Settings() {
                                             size='sm'
                                             onClick={() => copyKey(key)}
                                             className='h-8 w-8 p-0'
-                                            title='复制密钥'
+                                            title='키 복사'
                                         >
                                             {copiedKeys.has(key) ? (
                                                 <Check className='h-4 w-4 text-green-500' />
@@ -307,15 +307,15 @@ export function Settings() {
                                             </AlertDialogTrigger>
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
-                                                    <AlertDialogTitle>确定删除此密钥？</AlertDialogTitle>
+                                                    <AlertDialogTitle>이 키를 삭제하시겠습니까?</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        此操作无法撤销。删除后使用此密钥的应用将无法访问 API。
+                                                        이 작업은 되돌릴 수 없습니다. 삭제 후 이 키를 사용하는 애플리케이션은 API에 액세스할 수 없습니다.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
-                                                    <AlertDialogCancel>取消</AlertDialogCancel>
+                                                    <AlertDialogCancel>취소</AlertDialogCancel>
                                                     <AlertDialogAction onClick={() => handleRemoveApiKey(key)}>
-                                                        删除
+                                                        삭제
                                                     </AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
@@ -329,21 +329,21 @@ export function Settings() {
                     <Separator />
 
                     <div className='space-y-2'>
-                        <Label htmlFor='new-api-key'>添加新 API 密钥</Label>
+                        <Label htmlFor='new-api-key'>새 API 키 추가</Label>
                         <div className='flex flex-wrap gap-2'>
                             <Input
                                 id='new-api-key'
                                 value={newApiKey}
                                 onChange={e => setNewApiKey(e.target.value)}
-                                placeholder='输入或生成新密钥'
+                                placeholder='새 키를 입력하거나 생성하세요'
                                 className='font-mono flex-1 min-w-0'
                             />
                             <div className='flex gap-2'>
-                                <Button variant='outline' size='icon' onClick={() => generateNewKey('api')} title='生成新密钥'>
+                                <Button variant='outline' size='icon' onClick={() => generateNewKey('api')} title='새 키 생성'>
                                     <RefreshCw className='h-4 w-4' />
                                 </Button>
                                 <Button onClick={handleAddApiKey} disabled={!newApiKey}>
-                                    添加
+                                    추가
                                 </Button>
                             </div>
                         </div>
@@ -356,14 +356,14 @@ export function Settings() {
                 <CardHeader>
                     <CardTitle className='flex items-center gap-2'>
                         <Shield className='h-5 w-5' />
-                        管理员密钥
+                        관리자 키
                     </CardTitle>
-                    <CardDescription>管理您的管理员访问密钥</CardDescription>
+                    <CardDescription>관리자 액세스 키를 관리합니다</CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                     {settings.admin_api_keys.length === 0 ? (
                         <Alert>
-                            <AlertDescription>暂无管理员密钥，请添加第一个密钥。</AlertDescription>
+                            <AlertDescription>관리자 키가 없습니다. 첫 번째 키를 추가해주세요.</AlertDescription>
                         </Alert>
                     ) : (
                         <div className='space-y-2'>
@@ -381,7 +381,7 @@ export function Settings() {
                                             size='sm'
                                             onClick={() => toggleKeyVisibility(key)}
                                             className='h-8 w-8 p-0'
-                                            title={visibleKeys.has(key) ? '隐藏密钥' : '显示密钥'}
+                                            title={visibleKeys.has(key) ? '키 숨기기' : '키 표시'}
                                         >
                                             {visibleKeys.has(key) ? (
                                                 <EyeOff className='h-4 w-4' />
@@ -394,7 +394,7 @@ export function Settings() {
                                             size='sm'
                                             onClick={() => copyKey(key)}
                                             className='h-8 w-8 p-0'
-                                            title='复制密钥'
+                                            title='키 복사'
                                         >
                                             {copiedKeys.has(key) ? (
                                                 <Check className='h-4 w-4 text-green-500' />
@@ -414,15 +414,15 @@ export function Settings() {
                                             </AlertDialogTrigger>
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
-                                                    <AlertDialogTitle>确定删除此密钥？</AlertDialogTitle>
+                                                    <AlertDialogTitle>이 키를 삭제하시겠습니까?</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        此操作无法撤销。删除后将无法使用此密钥访问管理面板。
+                                                        이 작업은 되돌릴 수 없습니다. 삭제 후 이 키로 관리 패널에 액세스할 수 없습니다.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
-                                                    <AlertDialogCancel>取消</AlertDialogCancel>
+                                                    <AlertDialogCancel>취소</AlertDialogCancel>
                                                     <AlertDialogAction onClick={() => handleRemoveAdminKey(key)}>
-                                                        删除
+                                                        삭제
                                                     </AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
@@ -436,13 +436,13 @@ export function Settings() {
                     <Separator />
 
                     <div className='space-y-2'>
-                        <Label htmlFor='new-admin-key'>添加新管理员密钥</Label>
+                        <Label htmlFor='new-admin-key'>새 관리자 키 추가</Label>
                         <div className='flex flex-wrap gap-2'>
                             <Input
                                 id='new-admin-key'
                                 value={newAdminKey}
                                 onChange={e => setNewAdminKey(e.target.value)}
-                                placeholder='输入或生成新密钥'
+                                placeholder='새 키를 입력하거나 생성하세요'
                                 className='font-mono flex-1 min-w-0'
                             />
                             <div className='flex gap-2'>
@@ -450,12 +450,12 @@ export function Settings() {
                                     variant='outline'
                                     size='icon'
                                     onClick={() => generateNewKey('admin')}
-                                    title='生成新密钥'
+                                    title='새 키 생성'
                                 >
                                     <RefreshCw className='h-4 w-4' />
                                 </Button>
                                 <Button onClick={handleAddAdminKey} disabled={!newAdminKey}>
-                                    添加
+                                    추가
                                 </Button>
                             </div>
                         </div>
@@ -468,9 +468,9 @@ export function Settings() {
                 <CardHeader>
                     <CardTitle className='flex items-center gap-2'>
                         <Globe className='h-5 w-5' />
-                        Claude 配置
+                        Claude 설정
                     </CardTitle>
-                    <CardDescription>配置 Claude AI 相关设置</CardDescription>
+                    <CardDescription>Claude AI 관련 설정을 구성합니다</CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                     <div className='grid gap-4 md:grid-cols-2'>
@@ -495,13 +495,13 @@ export function Settings() {
                         </div>
 
                         <div className='space-y-2 md:col-span-2'>
-                            <Label htmlFor='proxy-url'>代理 URL (可选)</Label>
+                            <Label htmlFor='proxy-url'>프록시 URL (선택 사항)</Label>
                             <Input
                                 id='proxy-url'
                                 value={settings.proxy_url || ''}
                                 onChange={e => updateSettings({ ...settings, proxy_url: e.target.value || null })}
                                 onBlur={() => handleFieldChange(settings)}
-                                placeholder='留空则不使用代理'
+                                placeholder='비워두면 프록시를 사용하지 않습니다'
                             />
                         </div>
                     </div>
@@ -513,19 +513,19 @@ export function Settings() {
                 <CardHeader>
                     <CardTitle className='flex items-center gap-2'>
                         <Sliders className='h-5 w-5' />
-                        格式化设置
+                        포맷 설정
                     </CardTitle>
-                    <CardDescription>自定义上下文格式</CardDescription>
+                    <CardDescription>컨텍스트 포맷을 사용자 정의합니다</CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-6'>
                     <div className='space-y-2'>
-                        <Label htmlFor='custom-prompt'>自定义提示词 (可选)</Label>
+                        <Label htmlFor='custom-prompt'>사용자 정의 프롬프트 (선택 사항)</Label>
                         <Textarea
                             id='custom-prompt'
                             value={settings.custom_prompt || ''}
                             onChange={e => updateSettings({ ...settings, custom_prompt: e.target.value || null })}
                             onBlur={() => handleFieldChange(settings)}
-                            placeholder='输入自定义的系统提示词...'
+                            placeholder='사용자 정의 시스템 프롬프트를 입력하세요...'
                             className='min-h-[100px]'
                         />
                     </div>
@@ -534,7 +534,7 @@ export function Settings() {
 
                     <div className='grid gap-4 md:grid-cols-3'>
                         <div className='space-y-2'>
-                            <Label htmlFor='human-name'>用户名称</Label>
+                            <Label htmlFor='human-name'>사용자 이름</Label>
                             <Input
                                 id='human-name'
                                 value={settings.human_name}
@@ -544,7 +544,7 @@ export function Settings() {
                         </div>
 
                         <div className='space-y-2'>
-                            <Label htmlFor='assistant-name'>助手名称</Label>
+                            <Label htmlFor='assistant-name'>어시스턴트 이름</Label>
                             <Input
                                 id='assistant-name'
                                 value={settings.assistant_name}
@@ -554,7 +554,7 @@ export function Settings() {
                         </div>
 
                         <div className='space-y-2'>
-                            <Label htmlFor='padtxt-length'>Padding 长度</Label>
+                            <Label htmlFor='padtxt-length'>패딩 길이</Label>
                             <Input
                                 id='padtxt-length'
                                 type='number'
@@ -570,8 +570,8 @@ export function Settings() {
                     <div className='space-y-4'>
                         <div className='flex items-center justify-between'>
                             <div className='space-y-0.5'>
-                                <Label htmlFor='use-real-roles'>使用真实角色</Label>
-                                <p className='text-sm text-muted-foreground'>启用后将使用真实角色前缀</p>
+                                <Label htmlFor='use-real-roles'>실제 역할 사용</Label>
+                                <p className='text-sm text-muted-foreground'>활성화하면 실제 역할 접두사를 사용합니다</p>
                             </div>
                             <Switch
                                 id='use-real-roles'
@@ -582,8 +582,8 @@ export function Settings() {
 
                         <div className='flex items-center justify-between'>
                             <div className='space-y-0.5'>
-                                <Label htmlFor='allow-external-images'>允许外部图片</Label>
-                                <p className='text-sm text-muted-foreground'>允许反代加载外部图片</p>
+                                <Label htmlFor='allow-external-images'>외부 이미지 허용</Label>
+                                <p className='text-sm text-muted-foreground'>리버스 프록시를 통해 외부 이미지 로드를 허용합니다</p>
                             </div>
                             <Switch
                                 id='allow-external-images'
@@ -594,8 +594,8 @@ export function Settings() {
 
                         <div className='flex items-center justify-between'>
                             <div className='space-y-0.5'>
-                                <Label htmlFor='preserve-chats'>保留聊天记录</Label>
-                                <p className='text-sm text-muted-foreground'>保留聊天历史记录以供后续查看</p>
+                                <Label htmlFor='preserve-chats'>채팅 기록 보관</Label>
+                                <p className='text-sm text-muted-foreground'>나중에 볼 수 있도록 채팅 기록을 보관합니다</p>
                             </div>
                             <Switch
                                 id='preserve-chats'

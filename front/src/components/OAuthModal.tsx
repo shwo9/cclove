@@ -56,7 +56,7 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
 
     const handleGenerateUrl = async () => {
         if (!organizationUuid.trim()) {
-            setError('请输入 Organization UUID')
+            setError('Organization UUID를 입력하세요')
             return
         }
 
@@ -86,7 +86,7 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
 
             setStep('code')
         } catch (err) {
-            setError('生成授权 URL 失败')
+            setError('인증 URL 생성 실패')
             console.error(err)
         } finally {
             setLoading(false)
@@ -95,7 +95,7 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
 
     const handleExchangeToken = async () => {
         if (!authCode.trim()) {
-            setError('请输入授权码')
+            setError('인증 코드를 입력하세요')
             return
         }
 
@@ -103,7 +103,7 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
         setError('')
 
         try {
-            // 发送 code 到后端进行 token 交换
+            // 토큰 교환을 위해 코드를 백엔드로 보냅니다
             const exchangeData = {
                 organization_uuid: formatUUID(organizationUuid),
                 code: authCode,
@@ -116,7 +116,7 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
             onClose()
         } catch (err) {
             console.error('OAuth exchange error:', err)
-            setError('授权失败，请重试')
+            setError('인증에 실패했습니다. 다시 시도해주세요')
         } finally {
             setLoading(false)
         }
@@ -127,7 +127,7 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
             <Alert className={cn(isMobile && 'mb-4')}>
                 <Info className='h-4 w-4' />
                 <AlertDescription>
-                    推荐使用 Cookie 添加账户，Clove 可以自动完成认证。OAuth 登录仅作为备选方案。
+                    쿠키를 사용하여 계정을 추가하는 것을 권장합니다. Clove는 자동으로 인증을 완료할 수 있습니다. OAuth 로그인은 대안으로만 사용됩니다.
                 </AlertDescription>
             </Alert>
 
@@ -139,15 +139,15 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
                         </Label>
                         <Input
                             id='organization_uuid'
-                            placeholder='请输入您的 Organization UUID'
+                            placeholder='Organization UUID를 입력하세요'
                             value={organizationUuid}
                             onChange={e => {
                                 const value = e.target.value
                                 setOrganizationUuid(value)
-                                // 验证 UUID 格式
+                                // UUID 형식 확인
                                 const formatted = formatUUID(value)
                                 if (formatted && !isValidUUID(formatted)) {
-                                    setUuidError('请输入有效的 UUID 格式')
+                                    setUuidError('유효한 UUID 형식을 입력하세요')
                                 } else {
                                     setUuidError('')
                                 }
@@ -160,15 +160,15 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
                                 <span>{uuidError}</span>
                             </div>
                         ) : (
-                            <p className='text-sm text-muted-foreground'>可在 Claude.ai Cookie 中的 lastActiveOrg 字段找到</p>
+                            <p className='text-sm text-muted-foreground'>Claude.ai 쿠키의 lastActiveOrg 필드에서 찾을 수 있습니다</p>
                         )}
                     </div>
 
                     <div className='space-y-2'>
-                        <Label htmlFor='accountType'>账户类型</Label>
+                        <Label htmlFor='accountType'>계정 유형</Label>
                         <Select value={accountType} onValueChange={value => setAccountType(value as any)}>
                             <SelectTrigger className='w-full' id='accountType'>
-                                <SelectValue placeholder='选择账户类型' />
+                                <SelectValue placeholder='계정 유형 선택' />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value='Pro'>Pro</SelectItem>
@@ -189,17 +189,17 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
                     <Alert>
                         <Info className='h-4 w-4' />
                         <AlertDescription>
-                            已在新窗口打开授权页面。完成授权后，请复制授权码并粘贴到下方输入框。
+                            새 창에서 인증 페이지가 열렸습니다. 인증을 완료한 후 인증 코드를 복사하여 아래 입력란에 붙여넣으세요.
                         </AlertDescription>
                     </Alert>
 
                     <div className='space-y-2'>
                         <Label htmlFor='auth_code'>
-                            授权码 <span className='text-destructive'>*</span>
+                            인증 코드 <span className='text-destructive'>*</span>
                         </Label>
                         <Input
                             id='auth_code'
-                            placeholder='请粘贴授权码'
+                            placeholder='인증 코드를 붙여넣으세요'
                             value={authCode}
                             onChange={e => setAuthCode(e.target.value)}
                             className='font-mono'
@@ -220,7 +220,7 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
     const footerContent = (
         <>
             <Button type='button' variant='outline' onClick={onClose}>
-                取消
+                취소
             </Button>
             {step === 'input' ? (
                 <Button
@@ -229,18 +229,18 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
                 >
                     {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
                     {loading ? (
-                        '生成中...'
+                        '생성 중...'
                     ) : (
                         <>
                             <ExternalLink className='mr-2 h-4 w-4' />
-                            开始授权
+                            인증 시작
                         </>
                     )}
                 </Button>
             ) : (
                 <Button onClick={handleExchangeToken} disabled={loading || !authCode.trim()}>
                     {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-                    {loading ? '验证中...' : '完成授权'}
+                    {loading ? '확인 중...' : '인증 완료'}
                 </Button>
             )}
         </>
@@ -255,8 +255,8 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
             <Dialog open={true} onOpenChange={onClose}>
                 <DialogContent className='sm:max-w-[600px]'>
                     <DialogHeader>
-                        <DialogTitle>OAuth 登录</DialogTitle>
-                        <DialogDescription>使用 OAuth 方式添加 Claude 账户</DialogDescription>
+                        <DialogTitle>OAuth 로그인</DialogTitle>
+                        <DialogDescription>OAuth 방식으로 Claude 계정 추가</DialogDescription>
                     </DialogHeader>
                     {formContent}
                     <DialogFooter>{footerContent}</DialogFooter>
@@ -270,8 +270,8 @@ export function OAuthModal({ onClose }: OAuthModalProps) {
             <DrawerContent>
                 <div className='max-h-[90vh] overflow-auto'>
                     <DrawerHeader>
-                        <DrawerTitle>OAuth 登录</DrawerTitle>
-                        <DrawerDescription>使用 OAuth 方式添加 Claude 账户</DrawerDescription>
+                        <DrawerTitle>OAuth 로그인</DrawerTitle>
+                        <DrawerDescription>OAuth 방식으로 Claude 계정 추가</DrawerDescription>
                     </DrawerHeader>
                     <div className='px-4'>{formContent}</div>
                     <DrawerFooter className='flex-row justify-end space-x-2'>{footerContent}</DrawerFooter>
